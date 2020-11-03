@@ -26,6 +26,13 @@
         <button class="button" type="submit">Add</button>
       </form>
     </div>
+
+
+    <div class="rick-container">
+      <img :src="rick" alt="Rick Sanchez" />
+      <img :src="marisa" alt="Marisa Morby" />
+    </div>
+
   </div>
 </template>
 
@@ -34,11 +41,6 @@ export default {
   data: () => {
     return {
       input: '',
-      images: [
-        'lwj/store/rubber-corgi',
-        'lwj/store/corgi-pal',
-        'lwj/store/boop',
-      ]
     }
   },
   computed: {
@@ -55,6 +57,33 @@ export default {
         this.input = ''
       }
     }
+  },
+  async asyncData(context) {
+    const rick = await fetch('https://rickandmortyapi.com/api/character/1')
+      .then((res) => res.json());
+    return {
+      rick: context.$cloudinary.image.fetchRemote(rick.image, {
+        effect: 'grayscale',
+        gravity: 'face',
+        crop: 'thumb',
+        width: 200,
+        height: 200,
+        radius: 'max'
+      }),
+      marisa: context.$cloudinary.image.url('jason.af/marisa-flowers-fb600be34f1e139a9feab1a85149d04d', {
+        effect: 'grayscale',
+        gravity: 'face',
+        crop: 'thumb',
+        width: 200,
+        height: 200,
+        radius: 'max'
+      }),
+      images: [
+        'lwj/store/rubber-corgi',
+        'lwj/store/corgi-pal',
+        'lwj/store/boop',
+      ]
+    }
   }
 }
 </script>
@@ -69,6 +98,7 @@ export default {
   margin: 0 auto;
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
@@ -112,4 +142,10 @@ export default {
   padding: 0.25rem 1rem;
 }
 
+.rick-container {
+  display: block;
+  padding: 4rem;
+  text-align: center;
+  width: 100%;
+}
 </style>
